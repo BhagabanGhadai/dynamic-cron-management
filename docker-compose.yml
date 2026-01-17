@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # --- Your Node.js App ---
+  api:
+    build: .
+    container_name: node_app
+    ports:
+      - "3000:3000"
+    environment:
+      # INSIDE Docker, we must use the service names
+      - DB_HOST=mongo
+      - REDIS_HOST=redis
+      - DB_USER=admin
+      - DB_PASS=secretpassword
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - app_network
+
+  # --- Redis Database ---
+  redis:
+    image: redis:alpine
+    container_name: redis_db
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+  # --- MongoDB Database ---
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+volumes:
+  mongo_data:
+
+networks:
+  app_network:
+    driver: bridge

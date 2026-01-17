@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "advance-cron",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

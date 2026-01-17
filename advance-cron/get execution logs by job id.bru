@@ -1,0 +1,11 @@
+meta {
+  name: get execution logs by job id
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:3000/api/execution-logs/job/651234567890abcdef123456
+  body: none
+  auth: none
+}

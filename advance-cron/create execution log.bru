@@ -1,0 +1,20 @@
+meta {
+  name: create execution log
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3000/api/execution-logs
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "cronJobId": "651234567890abcdef123456",
+    "status": "SUCCESS",
+    "responseStatus": 200,
+    "responseBody": { "message": "OK" }
+  }
+}
