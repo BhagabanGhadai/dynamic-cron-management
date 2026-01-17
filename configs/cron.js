@@ -22,6 +22,9 @@ export const scheduleCronJob = async (cronJob, queue = null) => {
         queue = createQueue('cron-jobs');
     }
     cron.schedule(cronJob.cronExpression, async () => {
+        const isJobActive = await redisClient.hget('cron-jobs', cronJob.name);
+        if (!isJobActive) return;
+
         const lock = await redisClient.set(`lock:${cronJob.name}`, cronJob.name, 'NX', 'EX', 60);
         if (lock) {
             await addJobToQueue(queue, cronJob.name, cronJob);
