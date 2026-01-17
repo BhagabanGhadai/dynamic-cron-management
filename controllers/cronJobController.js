@@ -56,12 +56,11 @@ export const deleteCronJob = async (req, res) => {
     try {
         const cronJob = await CronJob.findByIdAndDelete(req.params.id);
         if (!cronJob) return res.status(404).json({ message: 'CronJob not found' });
-
         const queue = createQueue('cron-jobs');
         await Promise.all([
-            redisClient.del(`lock:${cronJob.name}`),
             redisClient.hdel('cron-jobs', cronJob.name),
-            removeJobFromQueue(queue, cronJob.name)
+            removeJobFromQueue(queue, cronJob.name),
+            redisClient.del(`lock:${cronJob.name}`),
         ]);
 
         res.status(200).json({ message: 'CronJob deleted successfully' });
